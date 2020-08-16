@@ -8,7 +8,7 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
 
-logdir = os.path.join(os.getcwd(), 'logs', 'login')
+logdir = 'C://Flask' + '/logs/login'
 
 
 # create a login with name, address, and status of whether login was successful
@@ -36,7 +36,7 @@ def write_log(log, location):
 def update_log(log):
     global logdir
     date = log.split()[0]
-    location = os.path.join(logdir, '{}.log'.format(date))
+    location = logdir + '/{}.log'.format(date)
     if os.path.exists(location):
         write_log(log, location)
     else:
@@ -50,7 +50,7 @@ def get_log():
     log_list = os.listdir(logdir)
     logs = []
     for log in log_list:
-        log = open(os.path.join(logdir, log), 'r')
+        log = open(logdir + '/' + log, 'r')
         raw_logs = log.readlines()
         for raw_log in raw_logs:
             processed_log = raw_log.strip('\n')
@@ -63,7 +63,7 @@ def get_log():
 
 def check_log(filename):
     global logdir
-    location = os.path.join(logdir, '{}.log'.format(filename))
+    location = logdir + '/{}.log'.format(filename)
     if os.path.exists(location):
         return True
     else:
@@ -87,7 +87,7 @@ def send_log(filename):
     # The body and the attachments for the mail
     message.attach(MIMEText(mail_content, 'plain'))
     attachment = MIMEBase('application', 'octet-stream')
-    attachment.set_payload(open(os.path.join(logdir, '{}.log'.format(filename)), 'rb').read())
+    attachment.set_payload(open(logdir + '/{}.log'.format(filename), 'rb').read())
     encoders.encode_base64(attachment)
     attachment.add_header('Content-Disposition', 'attachment; filename="{}.log"'.format(filename))
     message.attach(attachment)
