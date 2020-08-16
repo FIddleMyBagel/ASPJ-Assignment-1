@@ -8,7 +8,7 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
 
-logdir = 'C://Flask' + '/logs/login'
+logdir = 'D:/School/Programming Stuff/ASPJ-Assignment/' + '/logs/login'
 
 
 # create a login with name, address, and status of whether login was successful
