@@ -8,6 +8,9 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
 
+logdir = os.path.join(os.getcwd(), 'logs', 'login')
+
+
 # create a login with name, address, and status of whether login was successful
 def create_log(name, address, status):
     current_time = datetime.now()
@@ -31,8 +34,9 @@ def write_log(log, location):
 # update the login
 # If the date file has not been created, it will create the file
 def update_log(log):
+    global logdir
     date = log.split()[0]
-    location = 'C:/Flask/logs/login/{}.log'.format(date)
+    location = os.path.join(logdir, '{}.log'.format(date))
     if os.path.exists(location):
         write_log(log, location)
     else:
@@ -42,10 +46,11 @@ def update_log(log):
 
 # retrieve all the access logs
 def get_log():
-    log_list = os.listdir('C:/Flask/logs/login')
+    global logdir
+    log_list = os.listdir(logdir)
     logs = []
     for log in log_list:
-        log = open('C:/Flask/logs/login/{}'.format(log))
+        log = open(os.path.join(logdir, log), 'r')
         raw_logs = log.readlines()
         for raw_log in raw_logs:
             processed_log = raw_log.strip('\n')
@@ -57,7 +62,8 @@ def get_log():
 
 
 def check_log(filename):
-    location = 'C:/Flask/logs/login/{}.log'.format(filename)
+    global logdir
+    location = os.path.join(logdir, '{}.log'.format(filename))
     if os.path.exists(location):
         return True
     else:
@@ -81,7 +87,7 @@ def send_log(filename):
     # The body and the attachments for the mail
     message.attach(MIMEText(mail_content, 'plain'))
     attachment = MIMEBase('application', 'octet-stream')
-    attachment.set_payload(open('C:/Flask/logs/login/{}.log'.format(filename), 'rb').read())
+    attachment.set_payload(open(os.path.join(logdir, '{}.log'.format(filename)), 'rb').read())
     encoders.encode_base64(attachment)
     attachment.add_header('Content-Disposition', 'attachment; filename="{}.log"'.format(filename))
     message.attach(attachment)
@@ -124,8 +130,11 @@ def multi_fail_log(address):
 def timeout():
     return datetime.now() + timedelta(minutes=5)
 
+
 def time_clear(timeout):
     if datetime.now() > timeout:
         return True
     else:
         return False
+
+
